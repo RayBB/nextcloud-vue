@@ -22,4 +22,5 @@
 
 export { default as NcMentionBubble } from './NcMentionBubble.vue'
 export { default as NcAutoCompleteResult } from './NcAutoCompleteResult.vue'
+export { default as NcRichContenteditableLink } from './NcRichContenteditableLink.vue'
 export { default } from './NcRichContenteditable.vue'
