@@ -37,6 +37,7 @@
 		-->
 		<NcPopover
 			class="link-picker-popover"
+			:container="'.rich-content-editable-wrapper'"
 			:shown.sync="showPopper"
 			:auto-hide="false"
 			@after-hide="onPickerHide">
@@ -190,15 +191,17 @@ export default {
 }
 </script>
 
-<style lang="scss">
-.v-popper__popper {
-	// this puts the modal on top of the popover
-	// the .modal-mask z-index is 9998
-	// problem with this: all .v-popper__inner in the modal will be "behind" the modal mask...
-	z-index: 9996 !important;
-	.v-popper__inner {
-		// this should be possible with the "prevent-overflow" prop of NcPopover passed to Dropdown but NcPopover's style is hardcoded
-		overflow: visible !important;
+<style scoped lang="scss">
+.rich-content-editable-wrapper {
+	::v-deep .v-popper__popper {
+		// this puts the modal on top of the popover
+		// the .modal-mask z-index is 9998
+		z-index: 9996 !important;
+
+		.v-popper__inner {
+			// this should be possible with the "prevent-overflow" prop of NcPopover passed to Dropdown but NcPopover's style is hardcoded
+			overflow: visible !important;
+		}
 	}
 }
 </style>
