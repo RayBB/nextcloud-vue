@@ -165,48 +165,34 @@ export default {
 		</template>
 		<div class="color-picker"
 			:class="{ 'color-picker--advanced-fields': advanced && advancedFields }">
-			<transition name="slide" mode="out-in">
-				<div v-if="!advanced" class="color-picker__simple">
-					<button v-for="(color, index) in palette"
-						:key="index"
-						:style="{'background-color': color }"
-						class="color-picker__simple-color-circle"
-						:class="{ 'color-picker__simple-color-circle--active' : color === currentColor }"
-						type="button"
-						@click="pickColor(color)">
-						<Check v-if="color === currentColor"
-							:size="20" />
-					</button>
-				</div>
-				<Chrome v-if="advanced"
-					v-model="currentColor"
-					class="color-picker__advanced"
-					:disable-alpha="true"
-					:disable-fields="!advancedFields"
-					@input="pickColor" />
-			</transition>
+			<div v-if="!advanced" class="color-picker__simple">
+				<button v-for="(color, index) in palette"
+					:key="index"
+					:style="{'background-color': color }"
+					class="color-picker__simple-color-circle"
+					:class="{ 'color-picker__simple-color-circle--active' : color === currentColor }"
+					type="button"
+					@click="pickColor(color)">
+					<Check v-if="color === currentColor"
+						:size="20" />
+				</button>
+			</div>
 			<div class="color-picker__navigation">
-				<NcButton v-if="advanced"
-					type="tertiary"
-					:aria-label="ariaBack"
-					@click="handleBack">
-					<template #icon>
-						<ArrowLeft :size="20" />
-					</template>
-				</NcButton>
-				<NcButton v-if="!advanced"
-					type="tertiary"
-					:aria-label="ariaMore"
-					@click="handleMoreSettings">
-					<template #icon>
+				<label class="color-picker__custom-label"
+					:class="{ 'color-picker__simple-color-circle--active' : color === currentColor }"
+
+				>
+					Custom color
+					<div class="color-picker__simple-color-circle" :style="{'background-color': currentColor }">
 						<DotsHorizontal :size="20" />
-					</template>
-				</NcButton>
-				<NcButton v-if="advanced"
-					type="primary"
-					@click="handleConfirm">
-					{{ t('Choose') }}
-				</NcButton>
+					</div>
+					<input
+						v-model="customColor"
+						type="color"
+						class="color-picker__custom"
+						@input="pickColor($event.target.value)"
+					>
+				</label>
 			</div>
 		</div>
 	</NcPopover>
@@ -222,8 +208,6 @@ import ArrowLeft from 'vue-material-design-icons/ArrowLeft.vue'
 import Check from 'vue-material-design-icons/Check.vue'
 import DotsHorizontal from 'vue-material-design-icons/DotsHorizontal.vue'
 
-import { Chrome } from 'vue-color'
-
 const rgbToHex = function(color) {
 	const hex = color.toString(16)
 	return hex.length === 1 ? '0' + hex : hex
@@ -235,7 +219,6 @@ export default {
 	components: {
 		ArrowLeft,
 		Check,
-		Chrome,
 		DotsHorizontal,
 		NcButton,
 		NcPopover,
@@ -248,14 +231,6 @@ export default {
 		value: {
 			type: String,
 			required: true,
-		},
-
-		/**
-		 * Set to `true` to enable advanced fields including HEX, RGB, and HSL
-		 */
-		advancedFields: {
-			type: Boolean,
-			default: false,
 		},
 
 		/**
@@ -282,6 +257,7 @@ export default {
 
 	data() {
 		return {
+			customColor: '',
 			currentColor: this.value,
 			advanced: false,
 			ariaBack: t('Back'),
@@ -334,9 +310,6 @@ export default {
 		 * @param {string} color the picked color
 		 */
 		pickColor(color) {
-			if (typeof color !== 'string') {
-				color = this.currentColor.hex
-			}
 			this.currentColor = color
 
 			/**
@@ -402,8 +375,20 @@ export default {
 		}
 	}
 
-	&__advanced {
-		box-shadow: none !important;
+	&__custom-label {
+		position: relative;
+		height: 34px;
+		font-size: 16px;
+		border-radius: 17px;
+		border: 1px solid rgba(0, 0, 0, 0.25);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	&__custom {
+		height: 0;
+		opacity: 0;
 	}
 
 	&__navigation {
@@ -411,70 +396,6 @@ export default {
 		flex-direction: row;
 		justify-content: space-between;
 		margin-top: 10px;
-	}
-}
-
-:deep() .vc {
-	&-chrome {
-		width: unset;
-		background-color: var(--color-main-background);
-
-		&-color-wrap {
-			width: 30px;
-			height: 30px;
-		}
-
-		&-active-color {
-			width: 34px;
-			height: 34px;
-			border-radius: 17px;
-		}
-
-		&-body {
-			padding: 14px 0 0 0;
-			background-color: var(--color-main-background);
-			.vc-input__input {
-				box-shadow: none;
-			}
-		}
-
-		&-toggle-btn {
-			filter: var(--background-invert-if-dark);
-		}
-
-		&-saturation {
-			&-wrap {
-				border-radius: 3px;
-			}
-
-			&-circle {
-				width: 20px;
-				height: 20px;
-			}
-		}
-	}
-}
-
-.slide {
-	&-enter {
-		transform: translateX(-50%);
-		opacity: 0;
-	}
-	&-enter-to {
-		transform: translateX(0);
-		opacity: 1;
-	}
-	&-leave {
-		transform: translateX(0);
-		opacity: 1;
-	}
-	&-leave-to {
-		transform: translateX(-50%);
-		opacity: 0;
-	}
-	&-enter-active,
-	&-leave-active {
-		transition: all 50ms ease-in-out;
 	}
 }
 

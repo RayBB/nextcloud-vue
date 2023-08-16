@@ -20,6 +20,7 @@ All notable changes to this project will be documented in this file.
   - `label` property was renamed to `name` for `NcMentionBubble`
   - `name` propery is now required for `NcActions*`, `NcAppNavigationItem` and `NcBreadcrumb*`
   - See linked pull request for full migration guide
+- `NcColorPicker` has no longer `advancedFields` prop using native color picker always with advanced fields
 
 ### :rocket: Enhancements
 - enh\(NcDatetime\): New component for displaying timestamps as time relative from now [\#4219](https://github.com/nextcloud-libraries/nextcloud-vue/pull/4219) ([susnux](https://github.com/susnux))
