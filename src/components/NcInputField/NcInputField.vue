@@ -155,8 +155,6 @@ export default {
 		 * The input label, always provide one for accessibility purposes.
 		 * This will also be used as a placeholder unless the placeholder
 		 * prop is populated with a different string.
-		 *
-		 * Note: If the background color is not `--color-main-background` consider using an external label instead (see `labelOutside`).
 		 */
 		label: {
 			type: String,
@@ -333,10 +331,9 @@ export default {
 	position: relative;
 	width: 100%;
 	border-radius: var(--border-radius-large);
-	margin-block-start: 6px; // for the label in active state
 
 	&__main-wrapper {
-		height: 38px; // 44px - 6px margin
+		height: 48px;
 		position: relative;
 	}
 
@@ -347,11 +344,13 @@ export default {
 
 	&__input {
 		margin: 0;
-		padding-inline: 12px 6px; // align with label 8px margin label + 6px padding label - 2px border input
-		height: 38px !important;
+		padding-block: 20px 0;
+		padding-inline: calc(var(--border-radius-large) - 2px); // border radius minus the border thickness
+		height: 48px !important; // align with NcSelect
 		width: 100%;
 
 		font-size: var(--default-font-size);
+		line-height: 1.5; // Acessibility needs min. 1.5
 		text-overflow: ellipsis;
 
 		background-color: var(--color-main-background);
@@ -360,6 +359,7 @@ export default {
 		border-radius: var(--border-radius-large);
 
 		cursor: pointer;
+		appearance: textfield;
 		-webkit-appearance: textfield !important;
 		-moz-appearance: textfield !important;
 
@@ -379,6 +379,16 @@ export default {
 			opacity: 0;
 		}
 
+		// Align label text color with border color
+		&:not(:placeholder-shown) + .input-field__label {
+			color: var(--color-text-maxcontrast);
+		}
+
+		&:focus + .input-field__label,
+		&:hover:not(&--success, &--error):not(:placeholder-shown) + .input-field__label {
+			color: var(--color-primary-element);
+		}
+
 		&:focus {
 			cursor: text;
 		}
@@ -391,21 +401,13 @@ export default {
 			box-shadow: unset !important; // Override server rules
 		}
 
-		&--leading-icon {
-			padding-inline-start: 32px;
-		}
-
-		&--trailing-icon {
-			padding-inline-end: 32px;
-		}
-
 		&--success {
 			border-color: var(--color-success) !important; //Override hover border color
 			&:focus-visible {
 				box-shadow: rgb(248, 250, 252) 0px 0px 0px 2px, var(--color-primary-element) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px
 			}
 
-			// Align label text color with border color (on hover / focus)
+			// Align label text color with border color
 			&:focus + .input-field__label,
 			&:hover:not(:placeholder-shown) + .input-field__label {
 				color: var(--color-success-text);
@@ -418,33 +420,30 @@ export default {
 				box-shadow: rgb(248, 250, 252) 0px 0px 0px 2px, var(--color-primary-element) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 1px 2px 0px
 			}
 
-			// Align label text color with border color (on hover / focus)
+			// Align label text color with border color
 			&:focus + .input-field__label,
 			&:hover:not(:placeholder-shown) + .input-field__label {
 				color: var(--color-error-text);
 			}
 		}
 
-		// Align label text color with border color (on hover / focus)
-		&:not(&--success, &--error) {
-			&:focus + .input-field__label,
-			&:hover:not(:placeholder-shown) + .input-field__label {
-				color: var(--color-primary-element);
-			}
+		&--leading-icon {
+			padding-inline-start: 32px;
+		}
+
+		&--trailing-icon {
+			padding-inline-end: 32px;
 		}
 	}
 
 	&__label {
 		position: absolute;
-		margin-inline: 14px 0;
+		padding-inline: var(--border-radius-large) 0; // position should be on the non-rounded part
 		// fix height and line height to center label
-		height: 17px;
-		max-width: fit-content;
-		line-height: 1;
-		inset-block-start: 12px;
+		height: 32px;
+		line-height: 32px;
+		inset-block-start: 8px;
 		inset-inline: 0;
-		// Fix color so that users do not think the input already has content
-		color: var(--color-text-maxcontrast);
 		// only one line labels are allowed
 		white-space: nowrap;
 		overflow: hidden;
@@ -452,35 +451,23 @@ export default {
 		// forward events to input
 		pointer-events: none;
 		// Position transition
-		transition: height var(--animation-quick), inset-block-start var(--animation-quick), font-size var(--animation-quick), color var(--animation-quick), background-color var(--animation-quick) var(--animation-slow);
+		transition: inset-block-start var(--animation-quick), font-size var(--animation-quick), color var(--animation-quick);
 
 		&--leading-icon {
 			// 32px icon + 2px border
-			margin-inline-start: 34px;
+			padding-inline-start: 34px;
 		}
 
 		&--trailing-icon {
 			// 32px icon + 2px border
-			margin-inline-end: 34px;
+			padding-inline-end: 34px;
 		}
 	}
 
 	&__input:focus + &__label,
 	&__input:not(:placeholder-shown) + &__label {
-		inset-block-start: -8px;
+		inset-block-start: -4px;
 		font-size: 13px; // minimum allowed font size for accessibility
-		font-weight: 500;
-		border-radius: var(--default-grid-baseline) var(--default-grid-baseline) 0 0;
-		background-color: var(--color-main-background);
-		height: 16px;
-		padding-inline: 5px;
-		padding-block-start: 2px;
-		margin-inline-start: 9px;
-
-		transition: height var(--animation-quick), inset-block-start var(--animation-quick), font-size var(--animation-quick), color var(--animation-quick);
-		&--leading-icon {
-			margin-inline-start: 29px;
-		}
 	}
 
 	&__icon {
@@ -493,19 +480,19 @@ export default {
 		opacity: 0.7;
 
 		&--leading {
-			inset-block-end: 3px;
+			inset-block-end: 8px;
 			inset-inline-start: 2px;
 		}
 
 		&--trailing {
-			inset-block-end: 3px;
+			inset-block-end: 8px;
 			inset-inline-end: 2px;
 		}
 	}
 
 	&__clear-button.button-vue {
 		position: absolute;
-		inset-block-end: 3px;
+		inset-block-end: 8px;
 		inset-inline-end: 2px;
 		min-width: unset;
 		min-height: unset;
