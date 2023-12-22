@@ -365,7 +365,8 @@ export default {
 						:style="{
 							backgroundImage: `url(${background})`
 						}"
-						tabindex="0"
+						:aria-label="hasFigureClickListener ? t('Open image') : undefined"
+						:tabindex="hasFigureClickListener ? '0' : undefined"
 						@click="onFigureClick"
 						@keydown.enter="onFigureClick">
 						<slot class="app-sidebar-header__background" name="header" />
