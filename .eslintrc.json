@@ -9,7 +9,8 @@
 		"appVersion": true
 	},
 	"extends": [
-		"@nextcloud/eslint-config/typescript"
+		"@nextcloud/eslint-config/typescript",
+		"plugin:storybook/recommended"
 	],
 	"plugins": [
 		"cypress"
