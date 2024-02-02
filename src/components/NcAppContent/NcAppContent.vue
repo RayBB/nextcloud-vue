@@ -83,11 +83,9 @@ The list size must be between the min and the max width value.
 				class="app-content-wrapper app-content-wrapper--mobile">
 				<NcAppDetailsToggle v-if="hasList && showDetails" @click.stop.prevent="hideDetails" />
 
-				<slot name="list" />
-				<slot />
+				<slot v-else />
 			</div>
-
-			<div v-else class="app-content-wrapper">
+			<div v-else-if="layout === 'vertical-split'" class="app-content-wrapper">
 				<Splitpanes class="default-theme"
 					@resized="handlePaneResize">
 					<Pane class="splitpanes__pane-list"
@@ -108,9 +106,8 @@ The list size must be between the min and the max width value.
 				</Splitpanes>
 			</div>
 		</template>
-
 		<!-- @slot Provide the main content to the app content -->
-		<slot v-else />
+		<slot v-if="!hasList" />
 	</main>
 </template>
 
@@ -119,11 +116,11 @@ import NcAppDetailsToggle from './NcAppDetailsToggle.vue'
 import { useIsMobile } from '../../composables/useIsMobile/index.js'
 
 import { getBuilder } from '@nextcloud/browser-storage'
-import { emit } from '@nextcloud/event-bus'
 import { useSwipe } from '@vueuse/core'
 import { Splitpanes, Pane } from 'splitpanes'
 
 import 'splitpanes/dist/splitpanes.css'
+import { emit } from '@nextcloud/event-bus'
 
 const browserStorage = getBuilder('nextcloud').persist().build()
 
@@ -139,7 +136,6 @@ export default {
 		Pane,
 		Splitpanes,
 	},
-
 	props: {
 		/**
 		 * Allows to disable the control by swipe of the app navigation open state
@@ -202,6 +198,19 @@ export default {
 			type: String,
 			default: null,
 		},
+		/**
+		 * Content layout used when there is a list together with content:
+		 * - `vertical-split` - a 2-column layout with list and default content separated vertically
+		 * - `no-split` - a single column layout; List is shown when `showDetails` is `false`, otherwise the default slot content is shown with a back button to return to the list.
+		 * On mobile screen `no-split` layout is forced.
+		 */
+		layout: {
+			type: String,
+			default: 'vertical-split',
+			validator(value) {
+				return ['no-split', 'vertical-split'].includes(value)
+			},
+		},
 	},
 
 	emits: [
@@ -219,7 +228,7 @@ export default {
 		return {
 			contentHeight: 0,
 			hasList: false,
-
+			hasContent: false,
 			swiping: {},
 			listPaneSize: this.restorePaneConfig(),
 		}
@@ -271,7 +280,7 @@ export default {
 	},
 
 	updated() {
-		this.checkListSlot()
+		this.checkSlots()
 	},
 
 	mounted() {
@@ -281,7 +290,7 @@ export default {
 			})
 		}
 
-		this.checkListSlot()
+		this.checkSlots()
 		this.restorePaneConfig()
 	},
 
@@ -320,11 +329,9 @@ export default {
 		},
 
 		// $slots is not reactive, we need to update this manually
-		checkListSlot() {
-			const hasListSlot = !!this.$slots.list
-			if (this.hasList !== hasListSlot) {
-				this.hasList = hasListSlot
-			}
+		checkSlots() {
+			this.hasList = !!this.$scopedSlots.list
+			this.hasContent = !!this.$scopedSlots.default
 		},
 
 		// browserStorage is not reactive, we need to update this manually
@@ -370,7 +377,7 @@ export default {
 }
 
 // Mobile list/details handling
-.app-content-wrapper--mobile {
+.app-content-wrapper--no-split {
 	&.app-content-wrapper--show-list :deep() {
 		.app-content-list {
 			display: flex;
@@ -429,6 +436,12 @@ export default {
 		&:after {
 			display: none;
 		}
+	}
+}
+
+.app-content-wrapper--show-list {
+	:deep(.app-content-list) {
+		max-width: none;
 	}
 }
 </style>
