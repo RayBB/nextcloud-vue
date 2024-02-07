@@ -339,7 +339,7 @@ export default {
 </docs>
 
 <template>
-	<Transition appear
+	<transition appear
 		name="slide-right"
 		@before-enter="onBeforeEnter"
 		@after-enter="onAfterEnter"
@@ -479,7 +479,7 @@ export default {
 				</template>
 			</NcEmptyContent>
 		</aside>
-	</Transition>
+	</transition>
 </template>
 
 <script>
