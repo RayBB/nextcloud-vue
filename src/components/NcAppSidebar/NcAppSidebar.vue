@@ -492,7 +492,6 @@ import Focus from '../../directives/Focus/index.js'
 import Linkify from '../../directives/Linkify/index.js'
 import Tooltip from '../../directives/Tooltip/index.js'
 import { useIsSmallMobile } from '../../composables/useIsMobile/index.js'
-import GenRandomId from '../../utils/GenRandomId.js'
 import { getTrapStack } from '../../utils/focusTrap.js'
 import { t } from '../../l10n.js'
 
@@ -651,7 +650,6 @@ export default {
 
 	setup() {
 		return {
-			uid: GenRandomId(),
 			isMobile: useIsSmallMobile(),
 		}
 	},
