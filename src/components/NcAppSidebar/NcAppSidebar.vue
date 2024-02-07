@@ -348,7 +348,6 @@ export default {
 		<aside id="app-sidebar-vue"
 			ref="sidebar"
 			class="app-sidebar"
-			:aria-labelledby="`app-sidebar-vue-${uid}__header`"
 			@keydown.esc.stop="isMobile && closeSidebar()">
 			<header :class="{
 					'app-sidebar-header--with-figure': hasFigure,
