@@ -403,7 +403,6 @@ export default {
 							<div class="app-sidebar-header__mainname-container">
 								<!-- main name -->
 								<h2 v-show="!nameEditable"
-									:id="`app-sidebar-vue-${uid}__header`"
 									v-linkify="{text: name, linkify: linkifyName}"
 									:aria-label="title"
 									:title="title"
