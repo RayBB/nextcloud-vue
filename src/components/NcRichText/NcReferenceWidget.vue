@@ -21,7 +21,7 @@
 			</div>
 		</component>
 		<NcButton v-if="hasInteractiveView && !isInteractive" class="toggle-interactive--button" @click="enableInteractive">
-			Enable interative mode
+			{{ enableLabel }}
 		</NcButton>
 	</div>
 </template>
@@ -44,7 +44,7 @@ export default {
 		},
 		interactive: {
 			type: Boolean,
-			default: false,
+			default: true,
 		},
 		interactiveOptIn: {
 			type: Boolean,
@@ -54,9 +54,10 @@ export default {
 	data() {
 		return {
 			compact: 3,
-			isVisible: false,
 			showInteractive: false,
+			isVisible: false,
 			rendered: false,
+			enableLabel: t('Enable interactive view'),
 		}
 	},
 	computed: {
@@ -112,15 +113,21 @@ export default {
 		},
 	},
 	watch: {
-		isVisible(val) {
-			if (!val || this.rendered) {
-				return
-			}
-			this.renderWidget()
+		isVisible: {
+			handler(val) {
+				if (!val) {
+					this.destroyWidget()
+					return
+				}
+				this.renderWidget()
+			},
+			immediate: true,
 		},
 	},
 	mounted() {
-		this.isVisible = useElementVisibility(this.$el)
+		useIntersectionObserver(this.$el, entries => {
+			this.isVisible = entries[0]?.isIntersecting ?? false
+		})
 		useResizeObserver(this.$el, entries => {
 			if (entries[0].contentRect.width < 450) {
 				this.compact = 0
@@ -160,6 +167,12 @@ export default {
 				})
 				this.rendered = true
 			})
+		},
+		destroyWidget() {
+			if (this.rendered) {
+				destroyWidget(this.reference.richObjectType, this.$el)
+				this.rendered = false
+			}
 		},
 	},
 }
