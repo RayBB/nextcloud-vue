@@ -1,6 +1,9 @@
 <template>
 	<div :class="{'toggle-interactive': hasInteractiveView && !isInteractive }">
-		<div v-if="reference && hasCustomWidget" ref="customWidget" class="widget-custom" />
+		<div v-if="reference && hasCustomWidget"
+			ref="customWidget"
+			class="widget-custom"
+			:class="{ 'full-width': hasFullWidth }" />
 
 		<component :is="referenceWidgetLinkComponent"
 			v-else-if="!noAccess && reference && reference.openGraphObject && !hasCustomWidget"
@@ -63,6 +66,9 @@ export default {
 	computed: {
 		isInteractive() {
 			return (!this.interactiveOptIn && this.interactive) || this.showInteractive
+		},
+		hasFullWidth() {
+			return hasFullWidth(this.reference.richObjectType)
 		},
 		hasCustomWidget() {
 			return isWidgetRegistered(this.reference.richObjectType)
@@ -193,6 +199,12 @@ export default {
 
 .widget-custom {
 	@include widget;
+
+	&.full-width {
+		width: var(--widget-full-width, 100%) !important;
+		left: calc( (var(--widget-full-width, 100%) - 100%) / 2 * -1);
+		position: relative;
+	}
 }
 
 .widget-access {
