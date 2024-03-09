@@ -114,6 +114,41 @@
 			</template>
 		</NcListItem>
 		<NcListItem
+			:name="'This is a list element that has side content to the right of the name.'"
+			:bold="false"
+			:active="true"
+			:counter-number="44">
+			<template #icon>
+				<NcAvatar disable-menu :size="44" user="janedoe" display-name="Jane Doe" />
+			</template>
+			<template #namesidecontent>
+				<div>
+					<NcAvatar disable-menu :size="20" user="johnadams" display-name="John Adams" />
+				</div>
+			</template>
+			<template #subname>
+				In this slot you can put both text and other components such as icons
+			</template>
+			<template #details>
+				<LinkIcon :size="16"/>
+			</template>
+			<template #indicator>
+				<!-- Color dot -->
+				<CheckboxBlankCircle :size="16" fill-color="#fff" />
+			</template>
+			<template #actions>
+				<NcActionButton>
+					Button one
+				</NcActionButton>
+				<NcActionButton>
+					Button two
+				</NcActionButton>
+				<NcActionButton>
+					Button three
+				</NcActionButton>
+			</template>
+		</NcListItem>
+		<NcListItem
 			:name="'Name of the element with highlighted counter'"
 			:bold="false"
 			:force-display-actions="true"
